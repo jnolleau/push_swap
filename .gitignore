@@ -1,3 +1,12 @@
+.DS_Store
+en.subject.pdf
+a.out
+a.out.dSYM
+a.out.dSYM/*
+valgrind_log
+push_swap
+checker_linux
+
 # Prerequisites
 *.d
 
