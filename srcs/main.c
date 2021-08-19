@@ -6,40 +6,122 @@
 /*   By: julnolle <julnolle@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/08/17 15:10:31 by julnolle          #+#    #+#             */
-/*   Updated: 2021/08/18 16:20:26 by julnolle         ###   ########.fr       */
+/*   Updated: 2021/08/19 12:33:35 by julnolle         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "push_swap.h"
 
-int	ft_check_args(char const **av)
+char	**ft_check_args(char const *str)
 {
-	if (!av)
-		return (FALSE);
+	char	**values;
+	int		i;
+
+	values = NULL;
+	values = ft_split_whitespaces(str);
+	if (values)
+	{
+		if (values[0] == NULL)
+		{
+			free_tab_str(values);
+			return (NULL);
+		}
+		i = 0;
+		while (values[i])
+		{
+			if (!ft_isdigit_str(values[i]))
+			{
+				free_tab_str(values);
+				return (NULL);
+			}
+			i++;
+		}
+	}
+	return (values);
+}
+
+int	check_duplicate(t_list *a, int val)
+{
+	t_list	*tmp;
+
+	tmp = a;
+	while (tmp)
+	{
+		if (*(int *)(tmp->content) == val)
+			return (FAILURE);
+		tmp = tmp->next;
+	}
+	return (SUCCESS);
+}
+
+int	add_values_to_stack(char **values, t_list **a)
+{
+	t_list	*new;
+	int		*val;
+	long	tmp_val;
+
+	while (*values)
+	{
+		tmp_val = atol(*values++);
+		if (tmp_val > (long)INT_MAX ||tmp_val < (long)INT_MIN)
+			return (FAILURE);
+		if (check_duplicate(*a, (int)tmp_val) == SUCCESS)
+		{
+			val = (int *)malloc(sizeof(int));
+			*val = (int)tmp_val;
+			new = ft_lstnew(val);
+			ft_lstadd_back(a, new);
+		}
+		else
+			return (FAILURE);
+	}
+	return (SUCCESS);
+}
+
+int	init_data(char const **av, t_list **a)
+{
+	char	**values;
+
 	while (*av)
 	{
-		if (!ft_isdigit_str(*av) || *av[0] == '\0')
-			return (FALSE);
+		values = ft_check_args(*av);
+		if (values)
+		{
+			if (add_values_to_stack(values, a) == FAILURE)
+			{
+				free_tab_str(values);
+				return (FAILURE);
+			}
+			free_tab_str(values);
+		}
+		else
+			return (FAILURE);
 		av++;
 	}
-	return (TRUE);
+	return (SUCCESS);
 }
 
 int	main(int ac, char const **av)
 {
+	t_list	*a;
+	t_list	*b;
+
+	a = NULL;
+	b = NULL;
 	if (ac > 1)
 	{
-		if (ft_check_args(++av) == TRUE)
+		if (init_data(++av, &a) == SUCCESS)
 		{
-			print_tab_str(av);
+			sort_stack(a, b);
 		}
 		else
-			write(1, "Error", ft_strlen("Error"));
+			ft_putendl("Error");
 	}
 	else
 	{
-		write(1, "Error", ft_strlen("Error"));
+		ft_putendl("Error");
 	}
-	write(1, "\n", 1);
+	ft_lstclear(&a, free);
+	ft_lstclear(&b, free);
 	return (0);
 }

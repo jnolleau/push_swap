@@ -47,6 +47,7 @@ endif
 
 # Main Sources
 SRCS += main.c
+SRCS += sort_stack.c
 
 vpath %.c ./srcs/
 
@@ -87,7 +88,7 @@ $(DIR_OBJS):
 
 $(LIBFT): FORCE
 # 	@echo "$(_BOLD)$(_GREEN)--> Creating $@...$(_END)"
-	$(MAKE) -C $(LIBFT_DIR)
+	$(MAKE) list -C $(LIBFT_DIR)
 # 	@echo "$(_BOLD)$(_YELLOW)--> $@ made$(_END)"
 
 
